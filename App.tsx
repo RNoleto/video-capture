@@ -81,29 +81,34 @@ export default function App() {
       setVideo(undefined);
     };
 
-    return(
-      <VideoPlayer 
-        video={video} 
-        onShare={shareVideo} 
-        onSave={saveVideo} 
-        onDiscard={discardVideo} />
-    )
+    return (
+      <VideoPlayer
+        video={video}
+        onSave={saveVideo}
+        onShare={shareVideo}
+        onDiscard={discardVideo}
+      />
+    );
   }
 
   return (
-    <CameraView 
-      cameraRef={cameraRef} 
-      isRecording={isRecording} 
-      onRecord={recordVideo} 
-      onStopRecording={stopRecording}
-    />
+    <View style={styles.container}>
+      <Camera
+        cameraRef={cameraRef}
+        isRecording={isRecording}
+        onRecord={recordVideo}
+        onStopRecording={stopRecording}
+        videoQuality={"1080p"}
+        mode="video"
+        mute={false}
+      />
+    </View>
   );
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
   },
 });
