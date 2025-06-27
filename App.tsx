@@ -1,12 +1,18 @@
 import { useState, useEffect, useRef, use } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { Camera } from 'expo-camera';
+import { Camera, CameraRecordingOptions } from 'expo-camera';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { shareAsync } from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
 
+import VideoPlayer from './src/components/VideoPlayer';
+import CameraView from './src/components/CameraView';
+
 export default function App() {
+  const cameraRef = useRef<Camera>(null);
+  const [isRecording, setIsRecording] = useState(false);
+
   const [hasCameraPermission, setHasCameraPermission] = useState(false);
   const [hasMicrophonePermission, setHasMicrophonePermission] = useState(false);
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState(false);
@@ -16,6 +22,7 @@ export default function App() {
       const cameraPermission = await Camera.requestCameraPermissionsAsync();
       const microphonePermission = await Camera.requestMicrophonePermissionsAsync();
       const mediaLibraryPermission =  await MediaLibrary.requestPermissionsAsync();
+      const [video, setVideo] = useState<any>();
 
       setHasCameraPermission(cameraPermission.status === 'granted');
       setHasMicrophonePermission(microphonePermission.status === 'granted');
@@ -32,12 +39,49 @@ export default function App() {
     return <Text>Não tem permissão de biblioteca de mídia</Text>
   }
 
+  const recordVideo = () => {
+    setIsRecording(true);
+
+    const options: CameraRecordingOptions = {
+      quality: "1080p",
+      maxDuration: 60,
+      mute: false,
+    };
+
+    if(cameraRef && cameraRef.current){
+      cameraRef.current.recordAsync(options).then((recordedVideo: any) => {
+        setVideo(recordedVideo);
+        setIsRecording(false);
+      });
+    }
+    
+  };
+
+  const stopRecording = () => {
+    setIsRecording(false);
+    if(cameraRef && cameraRef.current){
+      cameraRef.current.stopRecording();
+    }
+  }
+
+  if(video){
+    const shareVideo = ()  => {};
+
+    const saveVideo = () => {};
+
+    return(
+      <VideoPlayer video={video} onShare={shareVideo} onSave={saveVideo} onDiscard={() => setVideo(undefined)} />
+    )
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-    </View>
+    <CameraView 
+      cameraRef={cameraRef} 
+      isRecording={isRecording} 
+      onRecord={recordVideo} 
+      onStopRecording={stopRecording}
+    />
   );
-}
 
 const styles = StyleSheet.create({
   container: {
