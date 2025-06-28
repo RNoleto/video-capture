@@ -17,4 +17,4 @@ export const styles = StyleSheet.create({
     buttonText:{
         color: "black",
     },
-);
+});

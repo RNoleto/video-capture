@@ -1,7 +1,8 @@
-import { Camera } from "expo-camera";
+// src/components/CameraView/props.ts
+import { CameraView } from "expo-camera";
 
 export interface CameraViewProps {
-    cameraRef: React.RefObject<Camera>;
+    cameraRef: React.RefObject<CameraView>;
     isRecording: boolean;
     onRecord: () => void;
     onStopRecording: () => void;
